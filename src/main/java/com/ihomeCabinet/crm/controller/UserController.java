@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -36,6 +37,11 @@ public class UserController {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @PostMapping("/login")
     @CrossOrigin(origins = "http://localhost:5173")
@@ -74,10 +80,8 @@ public class UserController {
         if (userService.existsByName(user.getName())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("name exist");
         }
-        String salt = Tool.generateSalt();
-        user.setSalt(salt);
-        String password = user.getPassword();
-        user.setPassword(userService.encryptPassword(password, salt)); // 这里可以根据需要加密密码
+
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // 这里可以根据需要加密密码
         userService.saveUser(user);
         return ResponseEntity.ok("注册成功");
     }
