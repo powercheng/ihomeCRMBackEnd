@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/customer")
 public class CustomerController {
 
     @Autowired
@@ -16,6 +17,7 @@ public class CustomerController {
 
     @GetMapping
     public List<Customer> getAllCustomers() {
+        System.out.println("get customers");
         return customerService.findAll();
     }
 

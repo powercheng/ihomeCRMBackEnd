@@ -54,4 +54,10 @@ public class UserService {
     }
 
     public List<User> findByRegion(Integer region) { return userRepository.findByRegion(region); }
+
+    public boolean existsByName(String name) {return userRepository.existsByName(name);
+    }
+
+    public User findByUsername(String username) { return userRepository.findByUsername(username);
+    }
 }

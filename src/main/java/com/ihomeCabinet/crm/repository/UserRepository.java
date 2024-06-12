@@ -12,4 +12,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
 
     List<User> findByRegion(Integer region);
+
+    boolean existsByName(String name);
 }

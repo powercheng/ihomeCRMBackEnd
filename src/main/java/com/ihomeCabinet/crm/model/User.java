@@ -17,21 +17,29 @@ import java.time.LocalDateTime;
 @Table(name = "User")
 public class User {
 
+    // 参数化构造函数
+    public User() {
+        this.status = 1;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(unique = true)
     private String username;
+    @Column(unique = true)
+    private String name;
+
+    private String email;
 
     private String password;
 
     private Integer region;
 
     private String salt;
-
-    private String status;
-
+    @Column()
+    private Integer status;
 
     private LocalDateTime createdAt;
     @PrePersist
