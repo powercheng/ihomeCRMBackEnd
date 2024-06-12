@@ -4,6 +4,7 @@ import com.ihomeCabinet.crm.MsgVO;
 import com.ihomeCabinet.crm.model.Customer;
 import com.ihomeCabinet.crm.service.UserService;
 import com.ihomeCabinet.crm.model.User;
+import com.ihomeCabinet.crm.tools.JwtSubject;
 import com.ihomeCabinet.crm.tools.ResponseBodyObject;
 import com.ihomeCabinet.crm.tools.TokenUtil;
 import com.ihomeCabinet.crm.tools.Tool;
@@ -33,7 +34,7 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private TokenUtil jwtUtil;
+    private TokenUtil tokenUtil;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -44,7 +45,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    @CrossOrigin(origins = "http://localhost:5173")
+    @CrossOrigin(origins = Tool.FRONTADDR)
     public Map<String, Object> login(@RequestBody User user) {
         String username = user.getUsername();
         String password = user.getPassword();
@@ -55,7 +56,9 @@ public class UserController {
                     new UsernamePasswordAuthenticationToken(username, password)
             );
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = jwtUtil.generateToken(userDetails.getUsername());
+            user = userService.findByUsername(userDetails.getUsername());
+            JwtSubject subject = new JwtSubject(user.getUsername(), user.getName(), user.getRegion(), user.getEmail());
+            String token = tokenUtil.generateToken(subject);
             response.put("token", token);
             return response;
         } catch (AuthenticationException e) {
@@ -72,7 +75,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    @CrossOrigin(origins = "http://localhost:5173")
+    @CrossOrigin(origins = Tool.FRONTADDR)
     public ResponseEntity<String> register(@RequestBody User user) {
         if (userService.existsByUsername(user.getUsername())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("username exist");

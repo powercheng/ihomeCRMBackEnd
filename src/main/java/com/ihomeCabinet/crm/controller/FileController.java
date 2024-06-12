@@ -1,5 +1,6 @@
 package com.ihomeCabinet.crm.controller;
 
+import com.ihomeCabinet.crm.tools.Tool;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +22,7 @@ public class FileController {
     private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/src/main/resources/static/files"; // Change this to your desired directory
 
     @PostMapping("/upload")
-    @CrossOrigin(origins = "http://localhost:5173")
+    @CrossOrigin(origins = Tool.FRONTADDR)
     public ResponseEntity<String> uploadFiles(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");

@@ -21,11 +21,14 @@ public class Customer {
     private String name;
     private String contact;
     private String address;
-    private String source;
-    // 1. san francisco   2. san jose   3. sacramento
-    private int belongTo;
+    private String cac;
+    private String salesRep;
+    //Customer Acquisition Channels
 
-    // 1.Create   2.Measure   3.Designing   4.Producing   5.Installing   6.Complete
+    // 1. san francisco   2. san jose   3. sacramento
+    private String salePlace;
+
+    // 1.Created   2.Measured   3.Designed   4.Produced  5.Installed   6.Complete
     private Integer status;
     private String measurer;
     private String houseImage;

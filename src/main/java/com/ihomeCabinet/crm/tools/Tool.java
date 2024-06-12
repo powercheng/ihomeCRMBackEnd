@@ -4,6 +4,8 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 public class Tool {
+
+    public static final String FRONTADDR = "http://localhost:5173";
     public static String generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16]; // 16 bytes = 128 bits

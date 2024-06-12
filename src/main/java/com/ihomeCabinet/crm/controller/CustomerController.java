@@ -2,6 +2,7 @@ package com.ihomeCabinet.crm.controller;
 
 import com.ihomeCabinet.crm.model.Customer;
 import com.ihomeCabinet.crm.service.CustomerService;
+import com.ihomeCabinet.crm.tools.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,25 +16,30 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @GetMapping
+    @GetMapping("/list")
+    @CrossOrigin(origins = Tool.FRONTADDR)
     public List<Customer> getAllCustomers() {
         System.out.println("get customers");
         return customerService.findAll();
     }
 
     @GetMapping("/{id}")
+    @CrossOrigin(origins = Tool.FRONTADDR)
     public ResponseEntity<Customer> getCustomerById(@PathVariable Integer id) {
         return customerService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/save")
+    @CrossOrigin(origins = Tool.FRONTADDR)
     public Customer createCustomer(@RequestBody Customer customer) {
+        customer.setStatus(1);
         return customerService.save(customer);
     }
 
     @PutMapping("/{id}")
+    @CrossOrigin(origins = Tool.FRONTADDR)
     public ResponseEntity<Customer> updateCustomer(@PathVariable Integer id, @RequestBody Customer customer) {
         return customerService.findById(id)
                 .map(existingCustomer -> {
