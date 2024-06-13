@@ -57,9 +57,15 @@ public class UserController {
             );
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             user = userService.findByUsername(userDetails.getUsername());
-            JwtSubject subject = new JwtSubject(user.getUsername(), user.getName(), user.getRegion(), user.getEmail());
+            JwtSubject subject = new JwtSubject(user.getUsername(), user.getRegion(), user.getEmail());
             String token = tokenUtil.generateToken(subject);
             response.put("token", token);
+
+            List<User> users = userService.findByRegion(user.getRegion());
+            List<String> coworkers = users.stream()
+                    .map(User::getUsername) // 这里假设 MyObject 类有一个名为 getPropertyName 的方法来获取属性值
+                    .toList();
+            response.put("coworkers", coworkers);
             return response;
         } catch (AuthenticationException e) {
             response.put("message", "Invalid username or password");
@@ -80,15 +86,12 @@ public class UserController {
         if (userService.existsByUsername(user.getUsername())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("username exist");
         }
-        if (userService.existsByName(user.getName())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("name exist");
-        }
-
         user.setPassword(passwordEncoder.encode(user.getPassword())); // 这里可以根据需要加密密码
         userService.saveUser(user);
         return ResponseEntity.ok("注册成功");
     }
 
+    @CrossOrigin(origins = Tool.FRONTADDR)
     @GetMapping("/region/{region}")
     public List<User> getCustomersByRegion(@PathVariable Integer region) {
         return userService.findByRegion(region);

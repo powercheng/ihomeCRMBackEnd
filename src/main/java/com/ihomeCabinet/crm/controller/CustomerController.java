@@ -34,7 +34,6 @@ public class CustomerController {
     @PostMapping("/save")
     @CrossOrigin(origins = Tool.FRONTADDR)
     public Customer createCustomer(@RequestBody Customer customer) {
-        customer.setStatus(1);
         return customerService.save(customer);
     }
 

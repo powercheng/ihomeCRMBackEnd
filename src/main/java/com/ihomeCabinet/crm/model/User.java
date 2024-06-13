@@ -28,8 +28,6 @@ public class User {
 
     @Column(unique = true)
     private String username;
-    @Column(unique = true)
-    private String name;
 
     private String email;
 
@@ -37,8 +35,6 @@ public class User {
 
     private Integer region;
 
-    private String salt;
-    @Column()
     private Integer status;
 
     private LocalDateTime createdAt;
