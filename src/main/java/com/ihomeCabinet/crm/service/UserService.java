@@ -15,7 +15,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-/*    public boolean login(String username, String password) {
+    public boolean login(String username, String password) {
         User user = userRepository.findByUsername(username);
         if (user != null) {
             // 根据数据库中的 salt 对密码进行加密
@@ -24,7 +24,7 @@ public class UserService {
             return encryptedPassword.equals(user.getPassword());
         }
         return false;
-    }*/
+    }
 
     public String encryptPassword(String password, String salt) {
         // 自定义的加密方法，根据需求实现

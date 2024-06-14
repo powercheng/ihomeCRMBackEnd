@@ -3,10 +3,12 @@ package com.ihomeCabinet.crm.controller;
 import com.ihomeCabinet.crm.model.Customer;
 import com.ihomeCabinet.crm.service.CustomerService;
 import com.ihomeCabinet.crm.tools.Tool;
+import com.ihomeCabinet.crm.tools.response.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.util.List;
 
 @RestController
@@ -17,14 +19,12 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping("/list")
-    @CrossOrigin(origins = Tool.FRONTADDR)
-    public List<Customer> getAllCustomers() {
-        System.out.println("get customers");
-        return customerService.findAll();
+    public Result getAllCustomers() {
+        List<Customer> customers = customerService.findAll();
+        return Result.ok(customers);
     }
 
     @GetMapping("/{id}")
-    @CrossOrigin(origins = Tool.FRONTADDR)
     public ResponseEntity<Customer> getCustomerById(@PathVariable Integer id) {
         return customerService.findById(id)
                 .map(ResponseEntity::ok)
@@ -32,20 +32,34 @@ public class CustomerController {
     }
 
     @PostMapping("/save")
-    @CrossOrigin(origins = Tool.FRONTADDR)
-    public Customer createCustomer(@RequestBody Customer customer) {
-        return customerService.save(customer);
+    public Result createCustomer(@RequestBody Customer customer) {
+        if (customer.getId() == 0) {
+            String path = this.getClass().getClassLoader().getResource("").getPath() + "static";
+            customer.setId(null);
+            customer.setStatus(1);
+            Customer res = customerService.save(customer);
+            File directory = new File(path+File.separator+res.getId());
+            directory.mkdir();
+            File directory1 = new File(path+File.separator+res.getId()+File.separator+"measureFiles");
+            directory1.mkdir();
+            File directory2 = new File(path+File.separator+res.getId()+File.separator+"designFiles");
+            directory2.mkdir();
+            File directory3 = new File(path+File.separator+res.getId()+File.separator+"orderFiles");
+            directory3.mkdir();
+            File directory4 = new File(path+File.separator+res.getId()+File.separator+"finalFiles");
+            directory4.mkdir();
+            return Result.ok(res);
+        } else {
+            customerService.save(customer);
+            return Result.ok(customer);
+        }
+
     }
 
     @PutMapping("/{id}")
-    @CrossOrigin(origins = Tool.FRONTADDR)
-    public ResponseEntity<Customer> updateCustomer(@PathVariable Integer id, @RequestBody Customer customer) {
-        return customerService.findById(id)
-                .map(existingCustomer -> {
-                    customer.setId(existingCustomer.getId());
-                    return ResponseEntity.ok(customerService.save(customer));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public Result updateCustomer(@PathVariable Integer id, @RequestBody Customer customer) {
+        customerService.save(customer);
+        return Result.ok();
     }
 
     @DeleteMapping("/{id}")

@@ -1,0 +1,21 @@
+spring:
+
+  application:
+    name: crm
+  datasource:
+    url: jdbc:sqlite:crm.db
+    driver-class-name: org.sqlite.JDBC
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+logging:
+  level:
+    root: DEBUG

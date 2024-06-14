@@ -1,12 +1,13 @@
 package com.ihomeCabinet.crm.model;
 
+import com.ihomeCabinet.crm.tools.JsonConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.awt.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,18 +32,19 @@ public class Customer {
     // 1.Created   2.Measured   3.Designed   4.Produced  5.Installed   6.Complete
     private Integer status;
     private String measurer;
-    private String originalPhotos;
-    private String floorPlan;
-    private String refImage;
+    @Convert(converter = JsonConverter.class)
+    private List<CustomerFile> measureFiles;
     private String priceRange;
     private String designer;
-    private String DesignDrawing;
-    private String designNote;
-    private String SalePrice;
-    private String OrderFile;
-    private String OrderNote;
-    private String Note;
-    private String finalPhotos;
+    @Convert(converter = JsonConverter.class)
+    private List<CustomerFile> designFiles;
+    private String salePrice;
+    @Convert(converter = JsonConverter.class)
+    private List<CustomerFile> orderFiles;
+    private String orderNote;
+    private String note;
+    @Convert(converter = JsonConverter.class)
+    private List<CustomerFile> finalFiles;
     private boolean finish;
     private LocalDateTime createdAt;
     private LocalDateTime measuredAt;
