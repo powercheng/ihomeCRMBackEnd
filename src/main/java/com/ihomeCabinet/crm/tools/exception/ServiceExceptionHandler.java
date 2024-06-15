@@ -22,8 +22,6 @@ public class ServiceExceptionHandler {
         return result;
     }
 
-
-
     /**
      * 处理所有RuntimeException异常
      */

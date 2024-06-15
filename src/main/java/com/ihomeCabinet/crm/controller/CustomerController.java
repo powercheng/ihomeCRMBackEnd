@@ -1,10 +1,16 @@
 package com.ihomeCabinet.crm.controller;
 
 import com.ihomeCabinet.crm.model.Customer;
+import com.ihomeCabinet.crm.tools.JwtSubject;
+import com.ihomeCabinet.crm.tools.TokenUtil;
+import com.ihomeCabinet.crm.tools.response.PaginatedResult;
 import com.ihomeCabinet.crm.service.CustomerService;
-import com.ihomeCabinet.crm.tools.Tool;
 import com.ihomeCabinet.crm.tools.response.Result;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +24,28 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+
     @GetMapping("/list")
-    public Result getAllCustomers() {
-        List<Customer> customers = customerService.findAll();
-        return Result.ok(customers);
+    public Result getAllCustomers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String salePlace
+    ) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Customer> customerPage;
+        if (salePlace != null && !salePlace.isEmpty()) {
+            customerPage = customerService.findBySalePlace(salePlace, pageRequest);
+        } else {
+            customerPage = customerService.findAll(pageRequest);
+        }
+
+        List<Customer> customers = customerPage.getContent();
+        long totalElements = customerPage.getTotalElements();
+
+        // Create a response object with customers and total count
+        PaginatedResult<Customer> paginatedResult = new PaginatedResult<>(customers, totalElements);
+
+        return Result.ok(paginatedResult);
     }
 
     @GetMapping("/{id}")
@@ -32,11 +56,15 @@ public class CustomerController {
     }
 
     @PostMapping("/save")
-    public Result createCustomer(@RequestBody Customer customer) {
+    public Result createCustomer(@RequestBody Customer customer, HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        JwtSubject user = TokenUtil.getUserFromToken(token);
         if (customer.getId() == 0) {
             String path = this.getClass().getClassLoader().getResource("").getPath() + "static";
             customer.setId(null);
             customer.setStatus(1);
+            customer.setSalePlace(user.getRegion());
+
             Customer res = customerService.save(customer);
             File directory = new File(path+File.separator+res.getId());
             directory.mkdir();

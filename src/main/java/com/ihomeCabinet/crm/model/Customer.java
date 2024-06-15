@@ -26,8 +26,8 @@ public class Customer {
     private String cac;
     private String salesRep;
     //Customer Acquisition Channels
-    // 1. san francisco   2. san jose   3. sacramento
-    private String salePlace;
+    //0.headquarter   1. san francisco   2. san jose   3. sacramento
+    private Integer salePlace;
 
     // 1.Created   2.Measured   3.Designed   4.Produced  5.Installed   6.Complete
     private Integer status;

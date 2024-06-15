@@ -23,8 +23,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private TokenUtil tokenUtil;
+
 
     @PostMapping("/login")
     public Result login(@RequestBody User user) {
@@ -35,7 +34,7 @@ public class UserController {
         if (loginSuccess) {
             User user1 = userService.findByUsername(username);
             JwtSubject subject = new JwtSubject(user1.getUsername(), user1.getRegion(), user1.getEmail());
-            String token = tokenUtil.generateToken(subject);
+            String token = TokenUtil.generateToken(subject);
 
             List<User> users = userService.findByRegion(user1.getRegion());
             List<String> coworkers = users.stream()
@@ -44,6 +43,7 @@ public class UserController {
             JSONObject jsonObject = new JSONObject();
             jsonObject.set("token", token);
             jsonObject.set("coworkers", coworkers);
+            jsonObject.set("region", user1.getRegion());
             return Result.ok(jsonObject);
         } else {
             return Result.fail("Invalid username or password");
@@ -54,6 +54,7 @@ public class UserController {
 
     @PostMapping("/register")
     public Result register(@RequestBody User user) {
+        User user2 = userService.findByUsername(user.getUsername());
         if (userService.existsByUsername(user.getUsername())) {
             return Result.fail("username exist");
         }
