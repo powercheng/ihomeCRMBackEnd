@@ -24,12 +24,12 @@ public class Customer {
     private String contact;
     private String address;
     private String cac;
-    private String salesRep;
+    private String saleRep;
     //Customer Acquisition Channels
     //0.headquarter   1. san francisco   2. san jose   3. sacramento
     private Integer salePlace;
 
-    // 1.Created   2.Measured   3.Designed   4.Produced  5.Installed   6.Complete
+    // 1.create   2.measure   3.design   4.produce  5.install   6.Complete
     private Integer status;
     private String measurer;
     @Convert(converter = JsonConverter.class)
@@ -44,8 +44,12 @@ public class Customer {
     private String orderNote;
     private String note;
     @Convert(converter = JsonConverter.class)
+    private List<CustomerFile> producedFiles;
+    @Convert(converter = JsonConverter.class)
     private List<CustomerFile> finalFiles;
-    private boolean finish;
+    @Column(nullable = false, columnDefinition = "default false")
+    private Boolean finish;
+    private Integer ownerId;
     private LocalDateTime createdAt;
     private LocalDateTime measuredAt;
     private LocalDateTime designedAt;

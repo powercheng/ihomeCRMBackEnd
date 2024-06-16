@@ -16,9 +16,11 @@ public class ServiceExceptionHandler {
      * 处理token异常
      */
     @ExceptionHandler({JWTVerificationException.class, SignatureVerificationException.class, AlgorithmMismatchException.class, JWTDecodeException.class})
-    public Result tokenErrorException() {
+    public Result tokenErrorException(Exception e) {
         Result result = Result.fail(401,"invalid token");
         log.error("invalid token");
+        log.error(e.getMessage());
+        e.printStackTrace();
         return result;
     }
 

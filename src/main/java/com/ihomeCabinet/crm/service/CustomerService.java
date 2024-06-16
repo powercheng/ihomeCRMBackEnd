@@ -32,6 +32,9 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
-    public Page<Customer> findBySalePlace(String salePlace, PageRequest pageRequest) { return customerRepository.findBySalePlace(salePlace, pageRequest);
+    public Page<Customer> findBySalePlace(Integer salePlace, PageRequest pageRequest) { return customerRepository.findBySalePlace(salePlace, pageRequest);
+    }
+
+    public Page<Customer> findBySalePlaceAndFinishFalse(Integer salePlace, PageRequest pageRequest) { return customerRepository.findBySalePlaceAndFinishFalse(salePlace, pageRequest);
     }
 }

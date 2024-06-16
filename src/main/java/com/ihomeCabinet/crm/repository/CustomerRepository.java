@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
-    Page<Customer> findBySalePlace(String salePlace, PageRequest pageRequest);
+    Page<Customer> findBySalePlace(Integer salePlace, PageRequest pageRequest);
+
+    Page<Customer> findBySalePlaceAndFinishFalse(Integer salePlace, PageRequest pageRequest);
 }
 

@@ -2,7 +2,11 @@ package com.ihomeCabinet.crm.controller;
 
 
 
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.ihomeCabinet.crm.model.UserDto;
+
 import com.ihomeCabinet.crm.service.UserService;
 import com.ihomeCabinet.crm.model.User;
 import com.ihomeCabinet.crm.tools.JwtSubject;
@@ -10,15 +14,13 @@ import com.ihomeCabinet.crm.tools.TokenUtil;
 import com.ihomeCabinet.crm.tools.Tool;
 import com.ihomeCabinet.crm.tools.response.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired
@@ -33,13 +35,14 @@ public class UserController {
         boolean loginSuccess = userService.login(username, password);
         if (loginSuccess) {
             User user1 = userService.findByUsername(username);
-            JwtSubject subject = new JwtSubject(user1.getUsername(), user1.getRegion(), user1.getEmail());
+            JwtSubject subject = new JwtSubject(user1.getId(), user1.getUsername(), user1.getRegion(), user1.getEmail());
             String token = TokenUtil.generateToken(subject);
 
             List<User> users = userService.findByRegion(user1.getRegion());
             List<String> coworkers = users.stream()
                     .map(User::getUsername) // 这里假设 MyObject 类有一个名为 getPropertyName 的方法来获取属性值
                     .toList();
+
             JSONObject jsonObject = new JSONObject();
             jsonObject.set("token", token);
             jsonObject.set("coworkers", coworkers);
